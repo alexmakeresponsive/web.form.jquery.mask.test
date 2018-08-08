@@ -1,0 +1,120 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="UTF-8">
+        <title>String: length</title>
+
+        <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+
+        <link rel="stylesheet" href="mini-default.css">
+        <style>
+            html, body {
+                margin: 0;
+                padding: 0;
+                height: 100%;
+            }
+            .pageWr {
+                max-width: 640px;
+                margin: auto;
+                padding-top: 100px;
+                padding-bottom: 100px;
+            }
+        </style>
+    </head>
+    <body>
+
+   <div class="pageWr">
+       <form>
+           <fieldset>
+
+               <legend>Simple form</legend>
+               <label for="username">Username</label>
+               <input type="text" id="Username" placeholder="Username"/>
+
+           </fieldset>
+       </form>
+       <div>
+           <table>
+               <caption>Results</caption>
+               <thead>
+               <tr>
+                   <th>Name parameter</th>
+                   <th>Value </th>
+               </tr>
+               </thead>
+               <tbody>
+               <tr>
+                   <td>Input value</td>
+                   <td data-label="inputValue">-</td>
+               </tr>
+               <tr>
+                   <td>Input value length</td>
+                   <td data-label="inputValue.length">-</td>
+               </tr>
+               <tr>
+                   <td>event keypress</td>
+                   <td data-label="event.keypress">-</td>
+               </tr>
+               <tr>
+                   <td>event keydown</td>
+                   <td data-label="event.keydown">-</td>
+               </tr>
+               </tbody>
+           </table>
+       </div>
+   </div>
+
+        <script>
+            var body = document.body;
+            var inputUsername = body.querySelector('#Username');
+            var resultInputValue = body.querySelector('td[data-label="inputValue"]');
+            var resultInputValueLength = body.querySelector('td[data-label="inputValue.length"]');
+
+            var resultEventKeypress = body.querySelector('td[data-label="event.keypress"]');
+            var resultEventKeydown = body.querySelector('td[data-label="event.keydown"]');
+
+            inputUsername.addEventListener('keypress', function (e) {
+                resultEventKeypress.innerHTML = true;
+            });
+            inputUsername.addEventListener('keydown', function (e) {
+                resultEventKeydown.innerHTML = true;
+            });
+
+            inputUsername.addEventListener('keydown', function (e) {
+                e.preventDefault();
+
+                var key = e.key.replace(/[^0-9]+/g, '');
+                var keyCode = e.keyCode;
+                var input = e.target;
+                var inputValueCurrent = e.target.value;
+                var inputValueCurrentLength = inputValueCurrent.length;
+
+                var inputValueNew = e.target.value + key;
+                var inputValueNewLength = inputValueNew.length;
+
+                var inputValueDeleted = e.target.value.slice(0, e.target.value.length-1);
+//                var inputValueDeletedLength = inputValueDeleted.length;
+
+
+
+                    console.log( inputValueDeleted );
+
+                if (keyCode === 8) {
+                    input.value = inputValueDeleted;
+                }
+
+                if ( inputValueNewLength < 4 && keyCode !== 8 ) {
+                    console.log('inputValueCurrent = ', inputValueCurrent);
+                    input.value = inputValueNew;
+                }
+
+
+                resultInputValue.innerHTML = inputValueCurrent;
+                resultInputValueLength.innerHTML = inputValueCurrentLength;
+            }, false);
+
+//            console.log( inputUsername );
+
+        </script>
+    </body>
+</html>
