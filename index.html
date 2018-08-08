@@ -26,6 +26,10 @@
    <div class="pageWr">
        <form>
            <fieldset>
+               <legend>Simple form</legend>
+               <input id="only-upper" type="text" size="2">
+           </fieldset>
+           <fieldset>
 
                <legend>Simple form</legend>
                <label for="username">Username</label>
@@ -47,18 +51,7 @@
                    <td>Input value</td>
                    <td data-label="inputValue">-</td>
                </tr>
-               <tr>
-                   <td>Input value length</td>
-                   <td data-label="inputValue.length">-</td>
-               </tr>
-               <tr>
-                   <td>event keypress</td>
-                   <td data-label="event.keypress">-</td>
-               </tr>
-               <tr>
-                   <td>event keydown</td>
-                   <td data-label="event.keydown">-</td>
-               </tr>
+
                </tbody>
            </table>
        </div>
@@ -67,25 +60,20 @@
         <script>
             var body = document.body;
             var inputUsername = body.querySelector('#Username');
-            var resultInputValue = body.querySelector('td[data-label="inputValue"]');
-            var resultInputValueLength = body.querySelector('td[data-label="inputValue.length"]');
 
-            var resultEventKeypress = body.querySelector('td[data-label="event.keypress"]');
-            var resultEventKeydown = body.querySelector('td[data-label="event.keydown"]');
 
-            inputUsername.addEventListener('keypress', function (e) {
-                resultEventKeypress.innerHTML = true;
-            });
-            inputUsername.addEventListener('keydown', function (e) {
-                resultEventKeydown.innerHTML = true;
-            });
 
             inputUsername.addEventListener('keydown', function (e) {
-                e.preventDefault();
+//                e.preventDefault();
+
+//                return false;
 
                 var key = e.key.replace(/[^0-9]+/g, '');
                 var keyCode = e.keyCode;
                 var input = e.target;
+                    input.value = '';
+
+
                 var inputValueCurrent = e.target.value;
                 var inputValueCurrentLength = inputValueCurrent.length;
 
@@ -93,11 +81,9 @@
                 var inputValueNewLength = inputValueNew.length;
 
                 var inputValueDeleted = e.target.value.slice(0, e.target.value.length-1);
-//                var inputValueDeletedLength = inputValueDeleted.length;
 
 
 
-                    console.log( inputValueDeleted );
 
                 if (keyCode === 8) {
                     input.value = inputValueDeleted;
@@ -107,13 +93,54 @@
                     console.log('inputValueCurrent = ', inputValueCurrent);
                     input.value = inputValueNew;
                 }
+            });
 
 
-                resultInputValue.innerHTML = inputValueCurrent;
-                resultInputValueLength.innerHTML = inputValueCurrentLength;
-            }, false);
 
-//            console.log( inputUsername );
+
+
+            function getChar(event) {
+                if (event.which == null) { // IE
+                    if (event.keyCode < 32) return null; // спец. символ
+                    return String.fromCharCode(event.keyCode)
+                }
+
+                if (event.which != 0 && event.charCode != 0) { // все кроме IE
+                    if (event.which < 32) return null; // спец. символ
+                    return String.fromCharCode(event.which); // остальные
+                }
+
+                return null; // спец. символ
+            }
+
+
+            document.getElementById('only-upper').onkeypress = function(e) {
+                // спец. сочетание - не обрабатываем
+                if (e.ctrlKey || e.altKey || e.metaKey) return;
+
+                var char = getChar(e);
+
+//                if (!char) return; // спец. символ - не обрабатываем
+
+                this.value = '';
+                this.value = char.toUpperCase();
+
+                return false;
+            };
+
+            document.getElementById('only-upper').onkeydown = function(e) {
+                // спец. сочетание - не обрабатываем
+                if (e.ctrlKey || e.altKey || e.metaKey) return;
+
+                var char = getChar(e);
+
+//                if (!char) return; // спец. символ - не обрабатываем
+
+                this.value = '';
+                this.value = char.toUpperCase();
+
+                return false;
+            };
 
         </script>
     </body>
