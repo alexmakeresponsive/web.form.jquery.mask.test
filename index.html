@@ -42,6 +42,7 @@
            <fieldset>
                <legend>Amount</legend>
                <input id="inputNumberOnly" type="tel">
+               <input  type="tel">
                <!--<div>
                    DEBUG: <span class="debugValueName">getNumericChar return: </span>
                    <span id="debugOutput_keyCode"></span>
@@ -200,6 +201,10 @@
 //                debugOutput_keyCode.html( e.keyCode );
 //                debugOutput_keyCode.html( getNumericChar( eventObjPrepare ) );
 //                debugOutput_event.html( JSON.stringify( eventObjPrepare, undefined, 2 ) );
+
+                if ( keyCode === 9 ) {
+                    return true;
+                }
 
                 if ( keyCode === 8 ) {
                     newValue = inputValue.slice( 0, -1 );
