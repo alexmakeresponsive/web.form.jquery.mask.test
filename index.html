@@ -266,21 +266,26 @@
                 }
 
                 if ( newChar === '' ) {
-                    console.log('inputValue = ', inputValue);
+//                    console.log('inputValue = ', inputValue);
                     newValue = inputValue.slice(0, inputValue.length-1);
 
-                    console.log('newValue = ', newValue);
-                    input.val(inputValueAddSpace(newValue));
+//                    console.log('newValue = ', newValue);
+                    input.val( inputValueAddSpace( newValue ) );
+                    input.val( inputValueAddSpace( inputValue.replace(/[^0-9]+/g, '') ) );
+
+
+                    if ( inputValueLength > maxInputValueLength ) {
+                        newValue = inputValue.slice(0, inputValue.length-1);
+                        input.val( inputValueAddSpace( newValue ) );
+                    }
 
                     return true;
                 }
 
+
                 if ( inputValueLength <= maxInputValueLength ) {
-                    if ( newChar !== '' ) {
-                        newValue = inputValueCleanSpace( storeInputsOldValues[e.target.name] ) + newChar;
-                    } else {
-                        newValue = '';
-                    }
+                    newValue = inputValueCleanSpace( storeInputsOldValues[e.target.name] ) + newChar;
+
                     input.val( inputValueAddSpace( newValue ) );
 
                     return true;
