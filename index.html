@@ -103,23 +103,65 @@
             }
 
 
-            function inputValueFormated ( inputValueDraft ) {
-                var arrInputValue         = inputValueDraft.split('').reverse();
-                var arrInputValueFormated = arrInputValue.map(function (currentValue, index) {
+
+
+            function inputValueAddSpace ( inputValueDraft ) {
+                var arrTarget       = inputValueDraft.split('');
+                var arrTargetLength = arrTarget.length;
+
+                var indexInverse;
+                var arrReverse = [];
+
+
+//                console.log( arrTarget );
+//                console.log( arrTarget.length );
+
+
+                for (var i = 0 ; i <= arrTargetLength - 1; i++) {
+
+                    indexInverse = arrTargetLength - 1 - i;
+//                    console.log( 'indexInverse = ',indexInverse );
+//                    console.log( 'index = ',i );
+
+                    arrReverse[i] = arrTarget[indexInverse];
+                }
+
+//                console.log( 'arrReverse = ', arrReverse );
+//                console.log( '---' );
+
+
+
+
+                var arrFormated = arrReverse.map(function (currentValue, index) {
                     if ( ( 3 + index ) % 3 === 0 ) {
                         return currentValue + ' ';
                     } else {
                         return currentValue
                     }
                 });
-                return arrInputValueFormated.reverse().join('');
+
+
+                arrReverse = [];
+
+
+                for (var i = 0 ; i <= arrTargetLength - 1; i++) {
+
+                    indexInverse = arrTargetLength - 1 - i;
+//                    console.log( 'indexInverse = ',indexInverse );
+//                    console.log( 'index = ',i );
+
+                    arrReverse[i] = arrFormated[indexInverse];
+                }
+
+
+                return arrReverse.join('');
             };
 
 
             function filterInputValue(e) {
 
                 var input = $(e.target);
-                var inputValue = input.val();
+                var inputValue = inputValueCleanSpace( input.val() );
                 var inputValueLength = inputValue.length;
                 var keyCode = e.keyCode;
                 var newValue;
@@ -182,7 +224,7 @@
 //                debugOutput_inputLength.html( newValueLength );
 
                 input.val( '' );
-                input.val( newValue );
+                input.val( inputValueAddSpace( newValue ) );
 
                 return false;
             }
