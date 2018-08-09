@@ -19,6 +19,17 @@
                 padding-top: 100px;
                 padding-bottom: 100px;
             }
+            input {
+                width: 100%;
+                margin: 0 !important;
+                margin-bottom: 15px !important;
+            }
+            .debugValueName {
+                color: #aa0600;
+            }
+            pre {
+                margin: 0 !important;
+            }
         </style>
     </head>
     <body>
@@ -26,79 +37,26 @@
    <div class="pageWr">
        <form>
            <fieldset>
-               <legend>Simple form</legend>
-               <input id="only-upper" type="text" size="2">
+               <legend>Android/iOS numeric keyboard</legend>
+               <input id="inputNumberOnly" type="tel">
+               <div>
+                   DEBUG: <span class="debugValueName">getNumericChar return: </span>
+                   <span id="debugOutput_keyCode"></span>
+               </div>
+               <div>
+                   DEBUG: <span class="debugValueName">input length: </span>
+                   <span id="debugOutput_inputLength"></span>
+               </div>
+               <div>
+                   DEBUG: <span class="debugValueName">event: </span>
+                   <pre id="debugOutput_event"></pre>
+               </div>
            </fieldset>
-           <fieldset>
 
-               <legend>Simple form</legend>
-               <label for="username">Username</label>
-               <input type="text" id="Username" placeholder="Username"/>
-
-           </fieldset>
        </form>
-       <div>
-           <table>
-               <caption>Results</caption>
-               <thead>
-               <tr>
-                   <th>Name parameter</th>
-                   <th>Value </th>
-               </tr>
-               </thead>
-               <tbody>
-               <tr>
-                   <td>Input value</td>
-                   <td data-label="inputValue">-</td>
-               </tr>
-
-               </tbody>
-           </table>
-       </div>
    </div>
         <script src="1.10.2.min.js"></script>
         <script>
-            var body = document.body;
-            var inputUsername = body.querySelector('#Username');
-
-
-
-            inputUsername.addEventListener('keydown', function (e) {
-//                e.preventDefault();
-
-//                return false;
-
-                var key = e.key.replace(/[^0-9]+/g, '');
-                var keyCode = e.keyCode;
-                var input = e.target;
-                    input.value = '';
-
-
-                var inputValueCurrent = e.target.value;
-                var inputValueCurrentLength = inputValueCurrent.length;
-
-                var inputValueNew = e.target.value + key;
-                var inputValueNewLength = inputValueNew.length;
-
-                var inputValueDeleted = e.target.value.slice(0, e.target.value.length-1);
-
-
-
-
-                if (keyCode === 8) {
-                    input.value = inputValueDeleted;
-                }
-
-                if ( inputValueNewLength < 4 && keyCode !== 8 ) {
-                    console.log('inputValueCurrent = ', inputValueCurrent);
-                    input.value = inputValueNew;
-                }
-            });
-
-
-
-
-
             function getChar(event) {
                 if (event.which == null) { // IE
                     if (event.keyCode < 32) return null; // спец. символ
@@ -113,39 +71,127 @@
                 return null; // спец. символ
             }
 
-            function filterAmount(e) {
-                // спец. сочетание - не обрабатываем
-                if (e.ctrlKey || e.altKey || e.metaKey) return;
 
-                var char = getChar(e);
-                    console.log( 'char = ', char );
-                    console.log( 'e.type = ', e.type );
+            function getNumericChar(event) {
+//                console.log(event);
 
-//                if (!char) return; // спец. символ - не обрабатываем
-                if ( char === null ) {
-//                    console.log( char );
+                var chars = [
+                    { code: 48, char: 0},
+                    { code: 49, char: 1},
+                    { code: 50, char: 2},
+                    { code: 51, char: 3},
+                    { code: 52, char: 4},
+                    { code: 53, char: 5},
+                    { code: 54, char: 6},
+                    { code: 55, char: 7},
+                    { code: 56, char: 8},
+                    { code: 57, char: 9}
+                ];
+
+                var char = chars.filter(function (charsSingle) {
+                    if ( event.keyCode === charsSingle.code ) {
+                        return charsSingle
+                    }
+                });
 
 
+                if ( char.length !== 0 ) {
+//                    console.log( char[0].char );
+                    return char[0].char;
                 }
 
-//                console.log( 'char = ', char );
+                return '';
+            }
+
+
+            function filterAmount(e) {
+
+                var input = $(e.target);
+                var inputValue = input.val();
+                var keyCode = e.keyCode;
+                var newValue;
+                var newValueLength;
+                var eventObjPrepare;
+                    eventObjPrepare = {
+//                    altKey: e.altKey,
+//                    bubbles: e.bubbles,
+//                    cancelable: e.cancelable,
+                    char: e.char,
+                    charCode: e.charCode,
+//                    ctrlKey: e.ctrlKey,
+//                    data: e.data,
+//                    eventPhase: e.eventPhase,
+                    key: ( e.key || '' ),
+                    keyCode: e.keyCode,
+//                    metaKey: e.metaKey,
+                    originalEvent: {
+                        altKey: e.originalEvent.altKey,
+                        charCode: e.originalEvent.charCode,
+                        code: e.originalEvent.code,
+                        key: ( e.originalEvent.key || '' ),
+                        keyCode: e.originalEvent.keyCode,
+                        which: e.originalEvent.which,
+                    },
+//                    relatedTarget: e.relatedTarget,
+//                    result: e.result,
+//                    shiftKey: e.shiftKey,
+//                    timeStamp: e.timeStamp,
+                    type: e.type,
+                    which: e.which,
+                };
+
+//                debugOutput_keyCode.html( e.keyCode );
+                debugOutput_keyCode.html( getNumericChar( eventObjPrepare ) );
 
 
 
-                this.value = '';
-                this.value = char.replace(/[^0-9]+/g, '');
+                debugOutput_event.html( JSON.stringify( eventObjPrepare, undefined, 2 ) );
+
+
+//                console.log('inputValue.length = ', inputValue.length);
+                console.log('eventObjPrepare.key.replace(/[^0-9]+/g, \'\') = ', eventObjPrepare.key.replace(/[^0-9]+/g, ''));
+
+                if ( keyCode === 8 ) {
+                    newValue = inputValue.slice( 0, -1 );
+                    newValueLength = newValue.length;
+
+                } else if ( keyCode !== 8 && inputValue.length <  6 ) {
+//                    newValue = input.val() + eventObjPrepare.key.replace(/[^0-9]+/g, '');
+                    newValue = inputValue + getNumericChar( eventObjPrepare );
+                    newValueLength = newValue.length;
+
+                } else if ( getNumericChar( eventObjPrepare ) === '' ) {
+//                    newValue = '';
+                    newValue = inputValue.slice( 0, -1 );
+                    newValueLength = 6;
+//                    return false;
+                } else {
+                    newValue = inputValue;
+                    newValueLength = 6;
+//                    return false;
+                }
+
+
+                debugOutput_inputLength.html( newValueLength );
+
+
+                input.val( '' );
+                input.val( newValue );
+
+
 
 
                 return false;
             }
 
 
-//            document.getElementById('only-upper').onkeypress = filterAmount;
-//            document.getElementById('only-upper').onkeydown = filterAmount;
 
-            var inputWithFilter = $('#only-upper');
+            var inputWithFilter         = $('#inputNumberOnly');
+            var debugOutput_inputLength = $('#debugOutput_inputLength');
+            var debugOutput_keyCode     = $('#debugOutput_keyCode');
+            var debugOutput_event     = $('#debugOutput_event');
 
-            inputWithFilter.on( 'keypress keydown', filterAmount );
+            inputWithFilter.on( 'keydown', filterAmount );
 
         </script>
 
