@@ -55,12 +55,12 @@
                    DEBUG: <span class="debugValueName">event: </span>
                    <pre id="debugOutput_event"></pre>
                </div>-->
-               <div>
+               <!--<div>
                    DEBUG: <span class="debugValueName">index: </span>
                    <span id="debugOutput_inputLength"></span>
-               </div>
+               </div>-->
                <div>
-                   DEBUG: <span class="debugValueName">input Value: </span>
+                   DEBUG: <span class="debugValueName">event: </span>
                    <pre id="debugOutput_event"></pre>
                </div>
            </fieldset>
@@ -69,6 +69,11 @@
    </div>
         <script src="1.10.2.min.js"></script>
         <script>
+            var storeInputsOldValues = {
+                //add dynamic here
+            };
+
+
             function getNumericChar(event) {
 //                console.log(event);
 
@@ -110,8 +115,6 @@
                 });
                 return result.join('');
             }
-
-
 
 
             function inputValueAddSpace ( inputValueDraft ) {
@@ -183,16 +186,6 @@
 
 
 
-
-
-
-
-
-            var storeInputsOldValues = {
-                //add dynamic here
-            };
-
-
             function filterInputValue(e) {
 
 //                console.log(e.type);
@@ -211,9 +204,9 @@
 
                 var inputValueLength = inputValue.length;
                 var keyCode = e.keyCode;
-                var newChar;
+
                 var newValue;
-                var newValueLength;
+//                var newValueLength;
                 var eventObjPrepare;
                     eventObjPrepare = {
 //                    altKey: e.altKey,
@@ -244,17 +237,17 @@
                 };
 
                 var maxInputValueLength = 6;
+                var newChar;
+                    newChar = getNumericChar( eventObjPrepare );
 
-//                debugOutput_event.html( inputValue );
 
 //                debugOutput_keyCode.html( e.keyCode );
 //                debugOutput_keyCode.html( getNumericChar( eventObjPrepare ) );
-//                debugOutput_event.html( JSON.stringify( eventObjPrepare, undefined, 2 ) );
+                debugOutput_event.html( JSON.stringify( eventObjPrepare, undefined, 2 ) );
 
 
-                console.log( 'inputValueLength = ', inputValueLength);
+//                console.log( 'inputValueLength = ', inputValueLength);
 
-                newChar = getNumericChar( eventObjPrepare );
 
 
 
@@ -270,6 +263,16 @@
 
                     return true;
 
+                }
+
+                if ( newChar === '' ) {
+                    console.log('inputValue = ', inputValue);
+                    newValue = inputValue.slice(0, inputValue.length-1);
+
+                    console.log('newValue = ', newValue);
+                    input.val(inputValueAddSpace(newValue));
+
+                    return true;
                 }
 
                 if ( inputValueLength <= maxInputValueLength ) {
@@ -291,13 +294,7 @@
                     return true;
                 }
 
-                if ( newChar === '' ) {
-                    newValue = inputValue.slice(0, -1);
 
-                    input.val(inputValueAddSpace(newValue));
-
-                    return true;
-                }
             }
 
 
