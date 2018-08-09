@@ -30,6 +30,9 @@
             pre {
                 margin: 0 !important;
             }
+            legend {
+                margin: auto !important;
+            }
         </style>
     </head>
     <body>
@@ -37,9 +40,9 @@
    <div class="pageWr">
        <form>
            <fieldset>
-               <legend>Android/iOS numeric keyboard</legend>
+               <legend>Amount</legend>
                <input id="inputNumberOnly" type="tel">
-               <div>
+               <!--<div>
                    DEBUG: <span class="debugValueName">getNumericChar return: </span>
                    <span id="debugOutput_keyCode"></span>
                </div>
@@ -50,28 +53,13 @@
                <div>
                    DEBUG: <span class="debugValueName">event: </span>
                    <pre id="debugOutput_event"></pre>
-               </div>
+               </div>-->
            </fieldset>
 
        </form>
    </div>
         <script src="1.10.2.min.js"></script>
         <script>
-            function getChar(event) {
-                if (event.which == null) { // IE
-                    if (event.keyCode < 32) return null; // спец. символ
-                    return String.fromCharCode(event.keyCode)
-                }
-
-                if (event.which != 0 && event.charCode != 0) { // все кроме IE
-                    if (event.which < 32) return null; // спец. символ
-                    return String.fromCharCode(event.which); // остальные
-                }
-
-                return null; // спец. символ
-            }
-
-
             function getNumericChar(event) {
 //                console.log(event);
 
@@ -104,10 +92,35 @@
             }
 
 
-            function filterAmount(e) {
+            function inputValueCleanSpace ( inputValueWithSpaces ) {
+                var result = inputValueWithSpaces.split('').map(function (t) {
+                    if (t === ' ') {
+                        return '';
+                    }
+                    return t;
+                });
+                return result.join('');
+            }
+
+
+            function inputValueFormated ( inputValueDraft ) {
+                var arrInputValue         = inputValueDraft.split('').reverse();
+                var arrInputValueFormated = arrInputValue.map(function (currentValue, index) {
+                    if ( ( 3 + index ) % 3 === 0 ) {
+                        return currentValue + ' ';
+                    } else {
+                        return currentValue
+                    }
+                });
+                return arrInputValueFormated.reverse().join('');
+            };
+
+
+            function filterInputValue(e) {
 
                 var input = $(e.target);
                 var inputValue = input.val();
+                var inputValueLength = inputValue.length;
                 var keyCode = e.keyCode;
                 var newValue;
                 var newValueLength;
@@ -140,22 +153,17 @@
                     which: e.which,
                 };
 
+                var maxInputValueLength = 6;
+
 //                debugOutput_keyCode.html( e.keyCode );
-                debugOutput_keyCode.html( getNumericChar( eventObjPrepare ) );
-
-
-
-                debugOutput_event.html( JSON.stringify( eventObjPrepare, undefined, 2 ) );
-
-
-//                console.log('inputValue.length = ', inputValue.length);
-                console.log('eventObjPrepare.key.replace(/[^0-9]+/g, \'\') = ', eventObjPrepare.key.replace(/[^0-9]+/g, ''));
+//                debugOutput_keyCode.html( getNumericChar( eventObjPrepare ) );
+//                debugOutput_event.html( JSON.stringify( eventObjPrepare, undefined, 2 ) );
 
                 if ( keyCode === 8 ) {
                     newValue = inputValue.slice( 0, -1 );
                     newValueLength = newValue.length;
 
-                } else if ( keyCode !== 8 && inputValue.length <  6 ) {
+                } else if ( keyCode !== 8 && inputValueLength <  maxInputValueLength ) {
 //                    newValue = input.val() + eventObjPrepare.key.replace(/[^0-9]+/g, '');
                     newValue = inputValue + getNumericChar( eventObjPrepare );
                     newValueLength = newValue.length;
@@ -163,35 +171,26 @@
                 } else if ( getNumericChar( eventObjPrepare ) === '' ) {
 //                    newValue = '';
                     newValue = inputValue.slice( 0, -1 );
-                    newValueLength = 6;
+                    newValueLength = maxInputValueLength;
 //                    return false;
                 } else {
                     newValue = inputValue;
-                    newValueLength = 6;
+                    newValueLength = maxInputValueLength;
 //                    return false;
                 }
 
-
-                debugOutput_inputLength.html( newValueLength );
-
+//                debugOutput_inputLength.html( newValueLength );
 
                 input.val( '' );
                 input.val( newValue );
-
-
-
 
                 return false;
             }
 
 
-
+            //Bind events
             var inputWithFilter         = $('#inputNumberOnly');
-            var debugOutput_inputLength = $('#debugOutput_inputLength');
-            var debugOutput_keyCode     = $('#debugOutput_keyCode');
-            var debugOutput_event     = $('#debugOutput_event');
-
-            inputWithFilter.on( 'keydown', filterAmount );
+                inputWithFilter.on( 'keydown', filterInputValue );
 
         </script>
 
