@@ -55,10 +55,10 @@
                    DEBUG: <span class="debugValueName">event: </span>
                    <pre id="debugOutput_event"></pre>
                </div>-->
-               <!--<div>
-                   DEBUG: <span class="debugValueName">index: </span>
+               <div>
+                   DEBUG: <span class="debugValueName">newValue: </span>
                    <span id="debugOutput_inputLength"></span>
-               </div>-->
+               </div>
                <div>
                    DEBUG: <span class="debugValueName">event: </span>
                    <pre id="debugOutput_event"></pre>
@@ -108,7 +108,7 @@
 
             function inputValueCleanSpace ( inputValueWithSpaces ) {
                 var result = inputValueWithSpaces.split('').map(function (t) {
-                    if (t === '+') {
+                    if (t === ' ') {
                         return '';
                     }
                     return t;
@@ -159,8 +159,8 @@
 
                 var arrFormated = arrReverse.map(function (currentValue, index) {
                     if ( ( 3 + index ) % 3 === 0 && index !== 0 ) {
-                        debugOutput_inputLength.html( index );
-                        return currentValue + '+';
+//                        debugOutput_inputLength.html( index );
+                        return currentValue + ' ';
                     } else {
                         return currentValue
                     }
@@ -267,7 +267,7 @@
 
                 if ( newChar === '' ) {
 //                    console.log('inputValue = ', inputValue);
-                    newValue = inputValue.slice(0, inputValue.length-1);
+                    newValue = inputValue.slice(0, inputValue.length);
 
 //                    console.log('newValue = ', newValue);
                     input.val( inputValueAddSpace( newValue ) );
@@ -276,6 +276,8 @@
 
                     if ( inputValueLength > maxInputValueLength ) {
                         newValue = inputValue.slice(0, inputValue.length-1);
+
+                        debugOutput_inputLength.html(newValue);
                         input.val( inputValueAddSpace( newValue ) );
                     }
 
