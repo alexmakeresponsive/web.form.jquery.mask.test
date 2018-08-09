@@ -113,34 +113,29 @@
                 return null; // спец. символ
             }
 
-
-            document.getElementById('only-upper').onkeypress = function(e) {
+            function filterAmount(e) {
                 // спец. сочетание - не обрабатываем
                 if (e.ctrlKey || e.altKey || e.metaKey) return;
 
                 var char = getChar(e);
 
 //                if (!char) return; // спец. символ - не обрабатываем
+//                if (!char) char = ''; // спец. символ - не обрабатываем
+
+                console.log( char );
+                console.log( e.target.value );
 
                 this.value = '';
-                this.value = char.toUpperCase();
+//                this.value = char.toUpperCase();
+                this.value = char.replace(/[^0-9]+/g, '');
+
 
                 return false;
-            };
+            }
 
-            document.getElementById('only-upper').onkeydown = function(e) {
-                // спец. сочетание - не обрабатываем
-                if (e.ctrlKey || e.altKey || e.metaKey) return;
 
-                var char = getChar(e);
-
-//                if (!char) return; // спец. символ - не обрабатываем
-
-                this.value = '';
-                this.value = char.toUpperCase();
-
-                return false;
-            };
+            document.getElementById('only-upper').onkeypress = filterAmount;
+            document.getElementById('only-upper').onkeydown = filterAmount;
 
         </script>
     </body>
