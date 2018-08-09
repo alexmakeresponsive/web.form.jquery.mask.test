@@ -41,7 +41,7 @@
        <form>
            <fieldset>
                <legend>Amount</legend>
-               <input id="inputNumberOnly" type="tel">
+               <input id="inputNumberOnly" name="inputAmount" type="tel">
                <input  type="tel">
                <!--<div>
                    DEBUG: <span class="debugValueName">getNumericChar return: </span>
@@ -55,6 +55,14 @@
                    DEBUG: <span class="debugValueName">event: </span>
                    <pre id="debugOutput_event"></pre>
                </div>-->
+               <div>
+                   DEBUG: <span class="debugValueName">index: </span>
+                   <span id="debugOutput_inputLength"></span>
+               </div>
+               <div>
+                   DEBUG: <span class="debugValueName">input Value: </span>
+                   <pre id="debugOutput_event"></pre>
+               </div>
            </fieldset>
 
        </form>
@@ -95,7 +103,7 @@
 
             function inputValueCleanSpace ( inputValueWithSpaces ) {
                 var result = inputValueWithSpaces.split('').map(function (t) {
-                    if (t === ' ') {
+                    if (t === '+') {
                         return '';
                     }
                     return t;
@@ -107,7 +115,18 @@
 
 
             function inputValueAddSpace ( inputValueDraft ) {
-                var arrTarget       = inputValueDraft.split('');
+                var arrTarget;
+
+//                console.log( inputValueDraft.toString().length );
+
+                if ( inputValueDraft.toString().length === 1 ) {
+                    arrTarget = [inputValueDraft];
+                } else {
+                    arrTarget = inputValueDraft.split('');
+                }
+
+
+
                 var arrTargetLength = arrTarget.length;
 
                 var indexInverse;
@@ -133,9 +152,12 @@
 
 
 
+
+
                 var arrFormated = arrReverse.map(function (currentValue, index) {
-                    if ( ( 3 + index ) % 3 === 0 ) {
-                        return currentValue + ' ';
+                    if ( ( 3 + index ) % 3 === 0 && index !== 0 ) {
+                        debugOutput_inputLength.html( index );
+                        return currentValue + '+';
                     } else {
                         return currentValue
                     }
@@ -159,12 +181,37 @@
             };
 
 
+
+
+
+
+
+
+
+            var storeInputsOldValues = {
+                //add dynamic here
+            };
+
+
             function filterInputValue(e) {
 
-                var input = $(e.target);
-                var inputValue = inputValueCleanSpace( input.val() );
+//                console.log(e.type);
+
+                if ( e.type === 'keydown' ) {
+                    storeInputsOldValues[e.target.name] = e.target.value;
+
+                    return true;
+                }
+
+
+                var input            = $(e.target);
+                var inputValue       = inputValueCleanSpace( input.val() );
+
+//                console.log( 'var inputValue = ', inputValue );
+
                 var inputValueLength = inputValue.length;
                 var keyCode = e.keyCode;
+                var newChar;
                 var newValue;
                 var newValueLength;
                 var eventObjPrepare;
@@ -198,38 +245,67 @@
 
                 var maxInputValueLength = 6;
 
+//                debugOutput_event.html( inputValue );
+
 //                debugOutput_keyCode.html( e.keyCode );
 //                debugOutput_keyCode.html( getNumericChar( eventObjPrepare ) );
 //                debugOutput_event.html( JSON.stringify( eventObjPrepare, undefined, 2 ) );
+
+
+                console.log( 'inputValueLength = ', inputValueLength);
+
+                newChar = getNumericChar( eventObjPrepare );
+
+
 
                 if ( keyCode === 9 ) {
                     return true;
                 }
 
                 if ( keyCode === 8 ) {
-                    newValue = inputValue.slice( 0, -1 );
-                    newValueLength = newValue.length;
+                    console.log(inputValue);
 
-                } else if ( keyCode !== 8 && inputValueLength <  maxInputValueLength ) {
-//                    newValue = input.val() + eventObjPrepare.key.replace(/[^0-9]+/g, '');
-                    newValue = inputValue + getNumericChar( eventObjPrepare );
-                    newValueLength = newValue.length;
+                    newValue = inputValue.slice( 0, inputValue.length );
+                    input.val( inputValueAddSpace( newValue ) );
 
-                } else if ( getNumericChar( eventObjPrepare ) === '' ) {
-//                    newValue = '';
-                    newValue = inputValue.slice( 0, -1 );
-                    newValueLength = maxInputValueLength;
-//                    return false;
-                } else {
-                    newValue = inputValue;
-                    newValueLength = maxInputValueLength;
-//                    return false;
+                    return true;
+
                 }
+
+                if ( inputValueLength <= maxInputValueLength ) {
+                    if ( newChar !== '' ) {
+                        newValue = inputValueCleanSpace( storeInputsOldValues[e.target.name] ) + newChar;
+                    } else {
+                        newValue = '';
+                    }
+//                    console.log( 'newValue = ', newValue );
+
+                }
+
+                if ( inputValueLength > maxInputValueLength ) {
+                    console.log(' > limit');
+                    newValue = inputValueCleanSpace( storeInputsOldValues[e.target.name] ).slice( 0, inputValueCleanSpace (storeInputsOldValues[e.target.name] ).length );
+                }
+
+                if ( newChar === '' ) {
+//                    console.log( 'newChar is Empty' );
+                    newValue = inputValue.slice( 0, -1 );
+
+                } else {
+//                    newValue = inputValue;
+                }
+
+
 
 //                debugOutput_inputLength.html( newValueLength );
 
-                input.val( '' );
+//                input.val( '' );
+
+//                console.log( newValue );
+//                console.log( inputValueAddSpace( newValue ) );
+
                 input.val( inputValueAddSpace( newValue ) );
+//                input.val( newValue );
 
                 return false;
             }
@@ -237,8 +313,12 @@
 
             //Bind events
             var inputWithFilter         = $('#inputNumberOnly');
-                inputWithFilter.on( 'keydown', filterInputValue );
+                inputWithFilter.on( 'keydown keyup', filterInputValue );
+//                inputWithFilter.on( 'keydown', inputValueOld );
 
+
+            var debugOutput_inputLength         = $('#debugOutput_inputLength');
+            var debugOutput_event         = $('#debugOutput_event');
         </script>
 
     </body>
