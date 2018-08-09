@@ -278,36 +278,26 @@
                     } else {
                         newValue = '';
                     }
-//                    console.log( 'newValue = ', newValue );
+                    input.val( inputValueAddSpace( newValue ) );
 
+                    return true;
                 }
 
                 if ( inputValueLength > maxInputValueLength ) {
-                    console.log(' > limit');
                     newValue = inputValueCleanSpace( storeInputsOldValues[e.target.name] ).slice( 0, inputValueCleanSpace (storeInputsOldValues[e.target.name] ).length );
+
+                    input.val( inputValueAddSpace( newValue ) );
+
+                    return true;
                 }
 
                 if ( newChar === '' ) {
-//                    console.log( 'newChar is Empty' );
-                    newValue = inputValue.slice( 0, -1 );
+                    newValue = inputValue.slice(0, -1);
 
-                } else {
-//                    newValue = inputValue;
+                    input.val(inputValueAddSpace(newValue));
+
+                    return true;
                 }
-
-
-
-//                debugOutput_inputLength.html( newValueLength );
-
-//                input.val( '' );
-
-//                console.log( newValue );
-//                console.log( inputValueAddSpace( newValue ) );
-
-                input.val( inputValueAddSpace( newValue ) );
-//                input.val( newValue );
-
-                return false;
             }
 
 
