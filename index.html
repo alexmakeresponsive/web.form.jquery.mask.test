@@ -118,15 +118,21 @@
                 if (e.ctrlKey || e.altKey || e.metaKey) return;
 
                 var char = getChar(e);
+                    console.log( 'char = ', char );
+                    console.log( 'e.type = ', e.type );
 
 //                if (!char) return; // спец. символ - не обрабатываем
-//                if (!char) char = ''; // спец. символ - не обрабатываем
+                if ( char === null ) {
+//                    console.log( char );
 
-                console.log( char );
-                console.log( e.target.value );
+
+                }
+
+//                console.log( 'char = ', char );
+
+
 
                 this.value = '';
-//                this.value = char.toUpperCase();
                 this.value = char.replace(/[^0-9]+/g, '');
 
 
@@ -134,8 +140,12 @@
             }
 
 
-            document.getElementById('only-upper').onkeypress = filterAmount;
-            document.getElementById('only-upper').onkeydown = filterAmount;
+//            document.getElementById('only-upper').onkeypress = filterAmount;
+//            document.getElementById('only-upper').onkeydown = filterAmount;
+
+            var inputWithFilter = $('#only-upper');
+
+            inputWithFilter.on( 'keypress keydown', filterAmount );
 
         </script>
 
